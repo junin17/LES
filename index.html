@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Les : Padrões para WEB">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Les</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/junin17/LES">View on GitHub</a>
+
+          <h1 id="project_title">Les</h1>
+          <h2 id="project_tagline">Padrões para WEB</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/junin17/LES/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/junin17/LES/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>
+<a id="page-controller" class="anchor" href="#page-controller" aria-hidden="true"><span class="octicon octicon-link"></span></a>Page Controller</h3>
+
+<p>Implementado através de um Servlet</p>
+
+<pre><code> protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+
+
+        String nome=request.getParameter("nome");
+        String email=request.getParameter("email");
+        String data=request.getParameter("dataNascimento");
+        String endereco=request.getParameter("endereco");
+        Date dataNascimento=null;
+        try {
+            dataNascimento=new SimpleDateFormat("dd/MM/yyyy").parse(data);
+        } catch (ParseException ex) {
+            out.println("Erro de conversão da data");
+
+        }
+        Contato contato=new Contato(nome,email,dataNascimento,endereco);
+        contato.salvarContato(DataBase.getInstance().getContatos());
+
+
+        out.println("Dado Salvo com Sucesso!!!");
+        out.println(DataBase.getInstance().getContatos().toString());
+
+    }
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Les maintained by <a href="https://github.com/junin17">junin17</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
