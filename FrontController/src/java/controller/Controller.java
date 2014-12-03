@@ -4,25 +4,20 @@
  * and open the template in the editor.
  */
 
-package actionController;
+package controller;
 
+import comandos.Comando;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.Contato;
-import model.DataBase;
 
 /**
  *
  * @author Junin
  */
-public class ArtistController extends HttpServlet {
+public class Controller extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -35,30 +30,17 @@ public class ArtistController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PrintWriter out = response.getWriter();
+        Comando comando=null;
         
-        
-        String nome=request.getParameter("nome");
-        String email=request.getParameter("email");
-        String data=request.getParameter("dataNascimento");
-        String endereco=request.getParameter("endereco");
-        Date dataNascimento=null;
-        try {
-            dataNascimento=new SimpleDateFormat("dd/MM/yyyy").parse(data);
-        } catch (ParseException ex) {
-            out.println("Erro de conversão da data");
-            
+        try{
+            comando = (Comando) Class.forName("comandos."+request.getParameter("command")).newInstance();
         }
-        Contato contato=new Contato(nome,email,dataNascimento,endereco);
-        contato.salvarContato(DataBase.getInstance().getContatos());
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
         
-        
-        out.println("Dado Salvo com Sucesso!!!");
-        out.println(DataBase.getInstance().getContatos().toString());
-        
+        comando.execute(request, response);
     }
-    
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
