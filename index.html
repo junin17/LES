@@ -1,37 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset="utf-8">
+    <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Laboratório de Engenharia de Software by junin17</title>
+    <meta name="description" content="Laboratório de Engenharia de Software : Padrões para WEB">
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Laboratório de Engenharia de Software</title>
   </head>
+
   <body>
-    <div class="wrapper">
-      <header>
-        <h1>Laboratório de Engenharia de Software</h1>
-        <p>Padrões para WEB</p>
 
-        <p class="view"><a href="https://github.com/junin17/LES">View the Project on GitHub <small>junin17/LES</small></a></p>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/junin17/LES">View on GitHub</a>
 
+          <h1 id="project_title">Laboratório de Engenharia de Software</h1>
+          <h2 id="project_tagline">Padrões para WEB</h2>
 
-        <ul>
-          <li><a href="https://github.com/junin17/LES/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/junin17/LES/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/junin17/LES">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/junin17/LES/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/junin17/LES/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <h3>
 <a id="page-controller" class="anchor" href="#page-controller" aria-hidden="true"><span class="octicon octicon-link"></span></a>Page Controller</h3>
 
+<p>O Page Controller em sua implementação mais simples, implementa um controle pra cada pagina ou requisição através de um Servlet.</p>
+
 <p>Implementado através de um Servlet</p>
+
+<p><strong>Servlet</strong></p>
 
 <pre><code> protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -58,13 +65,181 @@
 
     }
 </code></pre>
+
+<p><strong>Pagina HTML com o formulario</strong></p>
+
+<pre><code>&lt;html&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Adiciona Contatos&lt;/h1&gt;
+    &lt;hr /&gt;
+    &lt;form action="adicionaContato"&gt;
+      Nome: &lt;input type="text" name="nome" /&gt;&lt;br /&gt;
+      E-mail: &lt;input type="text" name="email" /&gt;&lt;br /&gt;
+      Endereco: &lt;input type="text" name="endereco" /&gt;&lt;br /&gt;
+      Data Nascimento: 
+        &lt;input type="text" name="dataNascimento" /&gt;&lt;br /&gt;
+
+      &lt;input type="submit" value="Gravar" /&gt;
+    &lt;/form&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<p><strong>Web.xml</strong></p>
+
+<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"&gt;
+    &lt;servlet&gt;
+        &lt;servlet-name&gt;AdicionaContato&lt;/servlet-name&gt;
+        &lt;servlet-class&gt;controller.ContatoController&lt;/servlet-class&gt;
+    &lt;/servlet&gt;
+    &lt;servlet-mapping&gt;
+        &lt;servlet-name&gt;AdicionaContato&lt;/servlet-name&gt;
+        &lt;url-pattern&gt;/adicionaContato&lt;/url-pattern&gt;
+    &lt;/servlet-mapping&gt;
+&lt;/web-app&gt;
+</code></pre>
+
+<p><br><br><br><br></p>
+
+<h3>
+<a id="front-controller" class="anchor" href="#front-controller" aria-hidden="true"><span class="octicon octicon-link"></span></a>Front Controller</h3>
+
+<p>O FrontController em sua implementação tem um controlador geral para as requisições da pagina Web</p>
+
+<p>Implementado através de um Servlet</p>
+
+<p><strong>Servlet</strong></p>
+
+<pre><code>protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        Comando comando=null;
+
+        try{
+            comando = (Comando) Class.forName("comandos."+request.getParameter("command")).newInstance();
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        comando.execute(request, response);
+    }
+</code></pre>
+
+<p><strong>Interface Comando</strong></p>
+
+<pre><code>public interface Comando {
+
+    public void execute(HttpServletRequest request, HttpServletResponse response);
+}
+
+</code></pre>
+
+<p><strong>Exibe Pagina Flamengo</strong></p>
+
+<pre><code>public class ExibePaginaFlamengo implements Comando{
+
+    public void execute(HttpServletRequest request, HttpServletResponse response) { 
+        try { 
+            RequestDispatcher d = request.getRequestDispatcher("/flamengo.jsp"); 
+            d.forward(request,response); 
+        } 
+        catch (ServletException e) { 
+            e.printStackTrace(); 
+        } 
+        catch (IOException e){
+            e.printStackTrace(); 
+        }
+    }
+
+}
+
+</code></pre>
+
+<p><strong>Exibe Pagina Vasco</strong></p>
+
+<pre><code>public class ExibePaginaVasco implements Comando{
+    public void execute(HttpServletRequest request, HttpServletResponse response) { 
+        try { 
+            RequestDispatcher d = request.getRequestDispatcher("/vasco.jsp"); 
+            d.forward(request,response); 
+        } 
+        catch (ServletException e) { 
+            e.printStackTrace(); 
+        } 
+        catch(IOException e){
+            e.printStackTrace(); 
+        }
+    }
+
+}
+
+</code></pre>
+
+<p><br><br><br><br></p>
+
+<h3>
+<a id="application-controller" class="anchor" href="#application-controller" aria-hidden="true"><span class="octicon octicon-link"></span></a>Application Controller</h3>
+
+<p>Cria um centralizador para manipular a navegação de tela o fluxo da aplicação</p>
+
+<p><strong>Servlet do Controller</strong></p>
+
+<pre><code>public class Controller extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP &lt;code&gt;GET&lt;/code&gt; and &lt;code&gt;POST&lt;/code&gt;
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String strDoComando= (String) request.getParameter("command");
+        Aplicacao apl= new ControladorDeAplicacao();
+        Comando comando=apl.lerComandoDeDominio(strDoComando);
+        comando.execute(request, response);
+    }
+}
+
+</code></pre>
+
+<p><strong>Controlador da Aplicação</strong></p>
+
+<pre><code>public class ControladorDeAplicacao implements Aplicacao {
+
+
+    public Comando lerComandoDeDominio(String comando) {
+        Comando comand=null;
+        try {
+            comand = (Comando) Class.forName("modelo."+comando).newInstance();
+        } catch (ClassNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (InstantiationException ex) {
+            ex.printStackTrace();
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+        return comand;
+    }
+}
+</code></pre>
       </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/junin17">junin17</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Laboratório de Engenharia de Software maintained by <a href="https://github.com/junin17">junin17</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+
     
+
   </body>
 </html>
