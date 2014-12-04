@@ -31,10 +31,4 @@ public class ControladorDeAplicacao implements Aplicacao {
         }
         return comand;
     }
-
-    
-    
-    
-    
-    
 }

@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import modelo.Comando;
 
 /**
  *
@@ -30,13 +31,11 @@ public class Controller extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        //        String strDoComando= (String) request.getParameter("command");
-//        Aplicacao apl= new ControladorDeAplicacao();
-//        Comando comando=apl.lerComandoDeDominio(strDoComando);
-//        comando.execute(request, response);
-        response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        out.println("flamengo");
+        
+        String strDoComando= (String) request.getParameter("command");
+        Aplicacao apl= new ControladorDeAplicacao();
+        Comando comando=apl.lerComandoDeDominio(strDoComando);
+        comando.execute(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
